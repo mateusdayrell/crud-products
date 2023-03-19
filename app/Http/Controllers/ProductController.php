@@ -7,6 +7,7 @@ use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\StoreReviewRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Mail\NewReview;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -84,7 +85,7 @@ class ProductController extends Controller
         $data = $request->all();
         $product->reviews()->create($data);
 
-        Mail::to('mateus@email.com')->send(new NewReview(['name' => $product['name'], 'rating' => $data['rating']]));
+        Mail::to(Auth::user()->email)->send(new NewReview(['name' => $product['name'], 'rating' => $data['rating']]));
 
         return Redirect::route('products.show', ['product' => $product])->with('message', 'Review criado com sucesso.');
     }
